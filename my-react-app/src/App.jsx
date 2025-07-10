@@ -5,11 +5,14 @@ import BelowNav from './components/BelowNav.jsx';
 import Hero from './components/Hero.jsx';
 import LoginA from './components/LoginA.jsx';
 import Verification from './components/Verification.jsx';
+import AdminPage from './admin/AdminPage.jsx';
 
 function LayoutWrapper() {
   const location = useLocation();
-  const hideNav = location.pathname === '/login' || location.pathname === '/verification';
-
+  const hideNav = 
+    location.pathname === '/login' || 
+    location.pathname === '/verification' ||
+    location.pathname === '/AdminPage'; 
 
   return (
     <>
@@ -20,6 +23,7 @@ function LayoutWrapper() {
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<LoginA />} />
         <Route path="/verification" element={<Verification />} />
+        <Route path="/AdminPage" element={<AdminPage />} />
       </Routes>
     </>
   );
@@ -34,5 +38,3 @@ function App() {
 }
 
 export default App;
-
-

